@@ -1,7 +1,7 @@
 plugins {
-
-    id 'org.jetbrains.kotlin.jvm' version '1.8.21'
+    id 'java'
     id 'jacoco'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.21'
     id 'application'
 }
 
@@ -14,13 +14,8 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
-    testImplementation 'junit:junit:4.13.1'
-    //testImplementation 'junit:junit:4.13.2'
+    testImplementation 'junit:junit:4.13.2'
 }
-
-//test {
-//    useJUnitPlatform()
-//}
 
 kotlin {
     jvmToolchain(11)

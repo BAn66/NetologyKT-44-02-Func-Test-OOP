@@ -11,7 +11,7 @@ class MainKtTest {
             nowPay = 10000
         )
         //assert
-        assertEquals(1, result) // Кладем сборку на гитхабе нужное значение 0
+        assertEquals(0, result) // Кладем сборку на гитхабе нужное значение 0
     }
 
     @Test
