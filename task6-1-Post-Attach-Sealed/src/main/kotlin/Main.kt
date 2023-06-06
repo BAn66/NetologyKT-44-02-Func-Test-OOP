@@ -1,3 +1,4 @@
+import java.net.URL
 import java.time.*
 
 fun main(args: Array<String>) {
@@ -20,8 +21,8 @@ data class Post(
     val reposts: Reposts? = Reposts(),
     val views: Int = 0,
     val postType: PostType = PostType.POST,
-    val postSource : PostSource? = PostSource(),
-   // val attachments: Array<Attachments> = emptyArray<Attachments>(),
+    val postSource: PostSource? = PostSource(),
+    val attachments: Array<Attachments>? = emptyArray<Attachments>(),
     val geo: Geo? = Geo(),
     val signerId: Int = 0,
     //val copyHistory: Array<Post> = emptyArray<Post>(),
@@ -32,7 +33,7 @@ data class Post(
     val markedAsADS: Boolean = false,
     val isFavorite: Boolean = false,
     val postponedId: Int = 0
-    ) {
+) {
     enum class PostType {
         POST, COPY, REPLY, POSTPONE, SUGGEST
     }
@@ -58,17 +59,105 @@ data class Post(
     )
 
     class PostSource {}
-    class Attachments {}
+
     class Geo {}
 }
 
+open abstract class Attachments(
+    val type: Any
+)
+
+class AttachmentsPhoto(type: Photo) : Attachments(type)
+class AttachmentsVideo(type: Video) : Attachments(type)
+class AttachmentsAudio(type: Audio) : Attachments(type)
+class AttachmentsDoc(type: Doc) : Attachments(type)
+class AttachmentsNote(type: Note) : Attachments(type)
+class Photo(
+    val id: Int,
+    val albumId: Int,
+    val ownerId: Int,
+    val userId: Int,
+    val text: String,
+    val date: LocalDate,
+    val sizes: Array<Sizes> = emptyArray<Sizes>(),
+    val widthOriginal: Int,
+    val heightOriginal: Int
+) {
+    class Sizes(
+        val type: String,
+        val url: URL,
+        val width: Int,
+        val height: Int
+    ) {}
+}
+
+class Video(
+    val id: Int,
+    val ownerId: Int,
+    val title: String,
+    val description: String,
+    val duration: Int,
+    val photo320: URL?,
+    val firstFrame320: URL?,
+    val date: LocalDate,
+    val addingDate: LocalDate,
+    val views: Int,
+    val comments: Int,
+    val player: URL,
+    val platform: String,
+    val canEdit: Boolean = true,
+    val canAdd: Boolean = true,
+    val isPrivate: Boolean = false,
+    val accessKey: String,
+    val processing: Boolean = false,
+    val live: Boolean = false,
+    val upcoming: Boolean = false,
+    val isFavorite: Boolean = false
+
+) {}
+
+class Audio(
+    val id: Int,
+    val ownerId: Int,
+    val artist: String,
+    val title: String,
+    val duration: Int,
+    val url: URL,
+    val lyricsId: Int,
+    val albumId: Int,
+    val genreId: Int,
+    val date: LocalDate,
+    val noSearch: Boolean = false,
+    val isHQ: Boolean = true
+) {}
+
+class Doc(
+    val id: Int,
+    val ownerId: Int,
+    val title: String,
+    val size: Int,
+    val url: URL,
+    val date: LocalDate,
+    val type: Int = 1
+) {}
+
+class Note(
+    val id: Int,
+    val ownerId: Int,
+    val title: String,
+    val text: String,
+    val date: LocalDate,
+    val comments: Int,
+    val readComments: Int,
+    val viewUrl: URL
+) {}
 
 
 object WallService {
     private var posts = emptyArray<Post>() //массив хранения постов
     private var uniqId: Int = 0 //уникальный айди поста
     fun add(post: Post): Post { // добавляем пост в массив с присвоением уникального айди и начальной записи
-        uniqId ++
+        uniqId++
         post.id = uniqId
         post.text = "Запись #$uniqId"
         posts += post
@@ -79,7 +168,7 @@ object WallService {
         var update: Boolean = false
         for (oldPost in posts) {
             if (oldPost.id == post.id) {
-                posts[oldPost.id-1] = post.copy()
+                posts[oldPost.id - 1] = post.copy()
                 update = true
             }
         }
