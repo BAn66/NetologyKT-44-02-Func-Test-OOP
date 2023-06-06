@@ -22,7 +22,7 @@ data class Post(
     val views: Int = 0,
     val postType: PostType = PostType.POST,
     val postSource: PostSource? = PostSource(),
-    val attachments: Array<Attachments>? = emptyArray<Attachments>(),
+    val attachments: Array<Attachment>? = emptyArray<Attachment>(),
     val geo: Geo? = Geo(),
     val signerId: Int = 0,
     //val copyHistory: Array<Post> = emptyArray<Post>(),
@@ -63,15 +63,13 @@ data class Post(
     class Geo {}
 }
 
-open abstract class Attachments(
-    val type: Any
-)
-
-class AttachmentsPhoto(type: Photo) : Attachments(type)
-class AttachmentsVideo(type: Video) : Attachments(type)
-class AttachmentsAudio(type: Audio) : Attachments(type)
-class AttachmentsDoc(type: Doc) : Attachments(type)
-class AttachmentsNote(type: Note) : Attachments(type)
+sealed class Attachment (val type: String){
+    class AttachmentPhoto(type: Photo) : Attachment("photo")
+    class AttachmentVideo(type: Video) : Attachment("video")
+    class AttachmentAudio(type: Audio) : Attachment("audio")
+    class AttachmentDoc(type: Doc) : Attachment("doc")
+    class AttachmentNote(type: Note) : Attachment("note")
+}
 class Photo(
     val id: Int,
     val albumId: Int,
